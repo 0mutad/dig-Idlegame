@@ -1,0 +1,206 @@
+:root {
+  /* この3つは game.js / electron/main.js と揃えること */
+  --card-w: 480px;
+  --strip-h: 190px;
+  --panel-h: 320px;
+  --margin: 14px;
+
+  --radius: 14px;
+  --ink: #e8edf3;
+  --sub: #9aa6b2;
+  --gold: #ffd166;
+  --bg: rgba(18, 20, 26, 0.94);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: "Segoe UI", "Yu Gothic UI", "Hiragino Sans", sans-serif;
+  color: var(--ink);
+  user-select: none;
+  cursor: default;
+}
+
+/* ブラウザで開いたときだけ、カードの外を塗って見やすくする */
+body:not(.electron) { background: #0e1014; }
+
+#app {
+  position: fixed;
+  right: var(--margin);
+  bottom: var(--margin);
+  width: var(--card-w);
+  height: var(--strip-h);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+#scene {
+  display: block;
+  width: var(--card-w);
+  height: var(--strip-h);
+}
+
+/* ---------- HUD ---------- */
+#hud {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  background: rgba(10, 12, 16, 0.78);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  -webkit-app-region: drag;   /* ここを掴んで移動できる */
+}
+
+.hud-left { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+.depth-val { font-size: 16px; font-weight: 700; }
+.unit { font-size: 10px; color: var(--sub); margin-left: -4px; }
+.stratum {
+  padding: 1px 6px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 10px;
+  white-space: nowrap;
+}
+.next {
+  color: var(--sub);
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hud-right { display: flex; align-items: center; gap: 4px; flex: none; }
+.money { color: var(--gold); font-weight: 600; font-size: 11px; margin-right: 2px; white-space: nowrap; }
+
+#hud button {
+  width: 24px;
+  height: 22px;
+  border: 0;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink);
+  font-size: 11px;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+#hud button:hover { background: rgba(255, 255, 255, 0.2); }
+#hud button.quit:hover { background: #c0392b; }
+
+/* ---------- パネル ---------- */
+#panel {
+  position: fixed;
+  right: var(--margin);
+  bottom: calc(var(--margin) + var(--strip-h) + 8px);
+  width: var(--card-w);
+  height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  transition: height 0.18s ease;
+}
+#panel.open { height: var(--panel-h); }
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.panel-head h2 { margin: 0; font-size: 13px; font-weight: 700; }
+.panel-head .rate { color: var(--sub); font-weight: 400; margin-left: 6px; }
+.panel-close {
+  width: 22px; height: 22px;
+  border: 0; border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink); cursor: pointer; font-size: 13px;
+}
+.panel-close:hover { background: #c0392b; }
+
+.panel-body {
+  height: calc(var(--panel-h) - 41px);
+  overflow-y: auto;
+  padding: 6px 12px 12px;
+}
+.panel-body::-webkit-scrollbar { width: 7px; }
+.panel-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+
+/* 強化 */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  margin-top: 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.row-icon { font-size: 16px; width: 20px; text-align: center; }
+.row-main { flex: 1; min-width: 0; }
+.row-name { font-size: 12px; font-weight: 600; }
+.lvtag { color: var(--sub); font-weight: 400; font-size: 10px; }
+.row-desc { font-size: 10px; color: var(--sub); margin-top: 2px; }
+.buy {
+  min-width: 78px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: #2f80ed;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.buy:hover { filter: brightness(1.12); }
+.buy.disabled { background: rgba(255, 255, 255, 0.1); color: var(--sub); cursor: not-allowed; }
+
+/* 図鑑 */
+.group { margin-top: 10px; }
+.group-name { font-size: 11px; font-weight: 700; margin-bottom: 5px; }
+.group-name span { color: var(--sub); font-weight: 400; font-size: 10px; }
+.grid { display: flex; flex-wrap: wrap; gap: 7px; }
+.cell {
+  width: 84px;
+  padding: 6px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  text-align: center;
+}
+.cell.locked { opacity: 0.35; }
+.cell .ic { font-size: 19px; line-height: 1.3; }
+.cell .nm { font-size: 10px; margin-top: 1px; }
+.cell .sub { font-size: 9px; color: var(--sub); margin-top: 1px; }
+
+/* ---------- おかえりトースト ---------- */
+#welcome {
+  position: fixed;
+  right: var(--margin);
+  bottom: calc(var(--margin) + var(--strip-h) + 8px);
+  width: var(--card-w);
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  background: var(--bg);
+  border: 1px solid rgba(255, 209, 102, 0.4);
+  font-size: 11px;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+#welcome.show { opacity: 1; transform: translateY(0); }
+#welcome b { color: var(--gold); }

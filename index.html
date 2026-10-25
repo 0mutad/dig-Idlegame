@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deskavation</title>
+<link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+
+<div id="welcome"></div>
+
+<div id="panel"></div>
+
+<div id="app">
+  <canvas id="scene"></canvas>
+  <div id="hud">
+    <div class="hud-left">
+      <span class="depth-val" id="depth">0</span><span class="unit">m</span>
+      <span class="stratum" id="stratum">表土</span>
+      <span class="next" id="next"></span>
+    </div>
+    <div class="hud-right">
+      <span class="money">💰 <span id="money">0</span> G</span>
+      <button id="btn-upgrade" title="強化">🔧</button>
+      <button id="btn-book" title="図鑑">📖</button>
+      <button id="btn-pause" title="一時停止">⏸</button>
+      <button id="btn-quit" class="quit" title="終了">×</button>
+    </div>
+  </div>
+</div>
+
+<script src="src/data.js"></script>
+<script src="src/game.js"></script>
+<script src="src/desktop.js"></script>
+</body>
+</html>

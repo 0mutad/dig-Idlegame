@@ -1,0 +1,13 @@
+{
+  "name": "deskavation",
+  "version": "0.1.0",
+  "description": "画面右下に常駐する放置採掘ゲーム",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^34.0.0"
+  }
+}
